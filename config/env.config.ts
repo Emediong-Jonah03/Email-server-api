@@ -1,8 +1,5 @@
 import { config } from "dotenv";
 
-if (process.env.NODE_ENV !== "production") {
-  const envFile = `${process.env.NODE_ENV || "development"}.env`;
-  config({ path: envFile });
-}
+config(); 
 
-export const { PORT, NODE_ENV, HOST, DB_URI, GMAIL_USER, RESEND_API } = process.env;
+export const { PORT, HOST, DB_URI, GMAIL_USER, RESEND_API } = process.env;

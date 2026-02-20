@@ -1,8 +1,8 @@
 {
   "compilerOptions": {
     "target": "es2020",
-    "module": "esnext",
-    "rootDir": "./src",
+    "module": "commonjs",
+    "rootDir": "./",
     "outDir": "./dist",
     "esModuleInterop": true,
     "strict": true

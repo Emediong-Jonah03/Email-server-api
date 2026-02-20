@@ -1,7 +1,7 @@
 import express from 'express';
-import { connectToDatabase } from './database/mongodb.ts';
-import { HOST, PORT } from './config/env.config.ts';
-import { sendEmail } from './controller/email.controller.ts';
+import { connectToDatabase } from './database/mongodb';
+import { HOST, PORT } from './config/env.config';
+import { sendEmail } from './controller/email.controller';
 import rateLimit from 'express-rate-limit';
 import cors from 'cors';
 

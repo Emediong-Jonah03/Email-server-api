@@ -1,7 +1,7 @@
-import { EmailModel } from "../model/email.model.ts";
+import { EmailModel } from "../model/email.model";
 import type { Request, Response } from "express";
 import { Resend } from "resend";
-import { RESEND_API, GMAIL_USER } from "../config/env.config.ts";
+import { RESEND_API, GMAIL_USER } from "../config/env.config";
 import mongoose from "mongoose";
 
 mongoose.set("bufferCommands", false);

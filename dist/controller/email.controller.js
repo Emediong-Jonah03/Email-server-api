@@ -1,10 +1,16 @@
-import { EmailModel } from "../model/email.model.ts";
-import { Resend } from "resend";
-import { RESEND_API, GMAIL_USER } from "../config/env.config.ts";
-import mongoose from "mongoose";
-mongoose.set("bufferCommands", false);
-const resend = new Resend(RESEND_API);
-export const sendEmail = async (req, res) => {
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getEmails = exports.sendEmail = void 0;
+const email_model_1 = require("../model/email.model");
+const resend_1 = require("resend");
+const env_config_1 = require("../config/env.config");
+const mongoose_1 = __importDefault(require("mongoose"));
+mongoose_1.default.set("bufferCommands", false);
+const resend = new resend_1.Resend(env_config_1.RESEND_API);
+const sendEmail = async (req, res) => {
     try {
         const { from, subject, body } = req.body;
         if (!from || !subject || !body ||
@@ -13,19 +19,19 @@ export const sendEmail = async (req, res) => {
             typeof body !== "string") {
             return res.status(400).json({ error: "Invalid input" });
         }
-        if (!GMAIL_USER) {
+        if (!env_config_1.GMAIL_USER) {
             return res.status(500).json({ error: "Recipient email not configured" });
         }
         const trimmedEmail = {
             from: from.trim(),
-            to: GMAIL_USER,
+            to: env_config_1.GMAIL_USER,
             subject: subject.trim(),
             body: body.trim(),
             sentAt: new Date(),
         };
         const { data, error } = await resend.emails.send({
             from: "onboarding@resend.dev",
-            to: GMAIL_USER,
+            to: env_config_1.GMAIL_USER,
             subject: trimmedEmail.subject,
             html: trimmedEmail.body,
         });
@@ -33,7 +39,7 @@ export const sendEmail = async (req, res) => {
             console.error("Resend Error:", error);
             return res.status(500).json({ error: "Failed to send email", details: error });
         }
-        const savedEmail = await EmailModel.create(trimmedEmail);
+        const savedEmail = await email_model_1.EmailModel.create(trimmedEmail);
         res.status(201).json({
             message: "Email sent and stored successfully",
             data: savedEmail,
@@ -45,11 +51,12 @@ export const sendEmail = async (req, res) => {
         res.status(500).json({ error: "Failed to send email" });
     }
 };
-export const getEmails = async (req, res) => {
+exports.sendEmail = sendEmail;
+const getEmails = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
-        const emails = await EmailModel.find()
+        const emails = await email_model_1.EmailModel.find()
             .sort({ createdAt: -1 })
             .skip((page - 1) * limit)
             .limit(limit);
@@ -63,3 +70,4 @@ export const getEmails = async (req, res) => {
         res.status(500).json({ error: "Failed to retrieve emails" });
     }
 };
+exports.getEmails = getEmails;
